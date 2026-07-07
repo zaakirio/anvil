@@ -1,0 +1,108 @@
+{
+  "url": "https://api.github.com/repos/fastapi/fastapi/issues/2026",
+  "repository_url": "https://api.github.com/repos/fastapi/fastapi",
+  "labels_url": "https://api.github.com/repos/fastapi/fastapi/issues/2026/labels{/name}",
+  "comments_url": "https://api.github.com/repos/fastapi/fastapi/issues/2026/comments",
+  "events_url": "https://api.github.com/repos/fastapi/fastapi/issues/2026/events",
+  "html_url": "https://github.com/fastapi/fastapi/issues/2026",
+  "id": 695859802,
+  "node_id": "MDU6SXNzdWU2OTU4NTk4MDI=",
+  "number": 2026,
+  "title": "HTTPBearer security scheme is returning 403 instead or 401",
+  "user": {
+    "login": "aaaaahaaaaa",
+    "id": 2808155,
+    "node_id": "MDQ6VXNlcjI4MDgxNTU=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/2808155?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/aaaaahaaaaa",
+    "html_url": "https://github.com/aaaaahaaaaa",
+    "followers_url": "https://api.github.com/users/aaaaahaaaaa/followers",
+    "following_url": "https://api.github.com/users/aaaaahaaaaa/following{/other_user}",
+    "gists_url": "https://api.github.com/users/aaaaahaaaaa/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/aaaaahaaaaa/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/aaaaahaaaaa/subscriptions",
+    "organizations_url": "https://api.github.com/users/aaaaahaaaaa/orgs",
+    "repos_url": "https://api.github.com/users/aaaaahaaaaa/repos",
+    "events_url": "https://api.github.com/users/aaaaahaaaaa/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/aaaaahaaaaa/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 1154536363,
+      "node_id": "MDU6TGFiZWwxMTU0NTM2MzYz",
+      "url": "https://api.github.com/repos/fastapi/fastapi/labels/question",
+      "name": "question",
+      "color": "d876e3",
+      "default": true,
+      "description": "Question or problem"
+    },
+    {
+      "id": 4694364991,
+      "node_id": "LA_kwDOCZduT88AAAABF85TPw",
+      "url": "https://api.github.com/repos/fastapi/fastapi/labels/investigate",
+      "name": "investigate",
+      "color": "5319E7",
+      "default": false,
+      "description": ""
+    },
+    {
+      "id": 5194404667,
+      "node_id": "LA_kwDOCZduT88AAAABNZxTOw",
+      "url": "https://api.github.com/repos/fastapi/fastapi/labels/question-migrate",
+      "name": "question-migrate",
+      "color": "ededed",
+      "default": false,
+      "description": null
+    }
+  ],
+  "state": "closed",
+  "locked": true,
+  "assignees": [
+
+  ],
+  "milestone": null,
+  "comments": 11,
+  "created_at": "2020-09-08T13:13:28Z",
+  "updated_at": "2023-02-28T18:42:54Z",
+  "closed_at": "2023-02-28T18:42:54Z",
+  "assignee": null,
+  "author_association": "NONE",
+  "issue_field_values": [
+
+  ],
+  "type": null,
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "HTTPBearer security scheme enabled as a dependency is returning a `403` when a request is unauthenticated because of a missing or a malformed `authorization` header. In those scenarios, a `401` should be returned instead.",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/fastapi/fastapi/issues/2026/reactions",
+    "total_count": 14,
+    "+1": 14,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/fastapi/fastapi/issues/2026/timeline",
+  "performed_via_github_app": null,
+  "state_reason": "completed",
+  "pinned_comment": null
+}

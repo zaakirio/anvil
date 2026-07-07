@@ -1,0 +1,17 @@
+{
+  "comment": "Recorded model outputs replayed by ScriptedChatModel so the agent-eval harness runs keyless end to end. Order matches fixtures/agent_eval_cases.jsonl.",
+  "cheap_model": [
+    {"content": "question"},
+    {"content": "question"},
+    {"content": "action"}
+  ],
+  "answer_model": [
+    {"content": "Import CORSMiddleware and add it to your app with add_middleware, listing the allowed origins [tutorial-cors#use-corsmiddleware]."},
+    {"content": "", "tool_calls": [{"name": "draft_issue_comment", "args": {"issue_number": 2595, "body": "TestClient is now based on httpx; install it with pip install httpx."}, "id": "call_fx"}]},
+    {"content": "The comment draft was approved by a human reviewer and recorded as approved."}
+  ],
+  "judge": [
+    {"content": "{\"faithfulness\": 1.0, \"relevancy\": 0.95, \"rationale\": \"Claim matches the CORSMiddleware excerpt.\"}"},
+    {"content": "{\"faithfulness\": 1.0, \"relevancy\": 0.9, \"rationale\": \"Honest refusal; no unsupported claims.\"}"}
+  ]
+}

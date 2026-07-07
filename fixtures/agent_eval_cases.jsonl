@@ -1,0 +1,3 @@
+{"id": "fx-grounded", "type": "grounded", "user": "How can I enable CORS in FastAPI?", "checks": {"cite_docs": ["tutorial-cors"], "must_refuse": false}}
+{"id": "fx-refusal", "type": "refusal", "user": "How do I add rate limiting to my FastAPI endpoints?", "checks": {"must_refuse": true}}
+{"id": "fx-hitl", "type": "hitl", "user": "Draft a comment on fastapi issue 2595 explaining that TestClient requires httpx.", "checks": {"tool": "draft_issue_comment", "args_subset": {"issue_number": 2595}, "hitl": true, "approve": true}}

@@ -1,0 +1,128 @@
+{
+  "url": "https://api.github.com/repos/fastapi/fastapi/issues/3361",
+  "repository_url": "https://api.github.com/repos/fastapi/fastapi",
+  "labels_url": "https://api.github.com/repos/fastapi/fastapi/issues/3361/labels{/name}",
+  "comments_url": "https://api.github.com/repos/fastapi/fastapi/issues/3361/comments",
+  "events_url": "https://api.github.com/repos/fastapi/fastapi/issues/3361/events",
+  "html_url": "https://github.com/fastapi/fastapi/issues/3361",
+  "id": 918048456,
+  "node_id": "MDU6SXNzdWU5MTgwNDg0NTY=",
+  "number": 3361,
+  "title": "How to log more info on 422 unprocessable entity",
+  "user": {
+    "login": "nickgieschen",
+    "id": 1622224,
+    "node_id": "MDQ6VXNlcjE2MjIyMjQ=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1622224?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/nickgieschen",
+    "html_url": "https://github.com/nickgieschen",
+    "followers_url": "https://api.github.com/users/nickgieschen/followers",
+    "following_url": "https://api.github.com/users/nickgieschen/following{/other_user}",
+    "gists_url": "https://api.github.com/users/nickgieschen/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/nickgieschen/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/nickgieschen/subscriptions",
+    "organizations_url": "https://api.github.com/users/nickgieschen/orgs",
+    "repos_url": "https://api.github.com/users/nickgieschen/repos",
+    "events_url": "https://api.github.com/users/nickgieschen/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/nickgieschen/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 1154536363,
+      "node_id": "MDU6TGFiZWwxMTU0NTM2MzYz",
+      "url": "https://api.github.com/repos/fastapi/fastapi/labels/question",
+      "name": "question",
+      "color": "d876e3",
+      "default": true,
+      "description": "Question or problem"
+    },
+    {
+      "id": 2109805297,
+      "node_id": "MDU6TGFiZWwyMTA5ODA1Mjk3",
+      "url": "https://api.github.com/repos/fastapi/fastapi/labels/answered",
+      "name": "answered",
+      "color": "f6f6f6",
+      "default": false,
+      "description": ""
+    },
+    {
+      "id": 5194404667,
+      "node_id": "LA_kwDOCZduT88AAAABNZxTOw",
+      "url": "https://api.github.com/repos/fastapi/fastapi/labels/question-migrate",
+      "name": "question-migrate",
+      "color": "ededed",
+      "default": false,
+      "description": null
+    }
+  ],
+  "state": "closed",
+  "locked": true,
+  "assignees": [
+
+  ],
+  "milestone": null,
+  "comments": 15,
+  "created_at": "2021-06-10T23:33:50Z",
+  "updated_at": "2023-02-27T22:49:08Z",
+  "closed_at": "2023-02-27T22:49:08Z",
+  "assignee": null,
+  "author_association": "NONE",
+  "issue_field_values": [
+
+  ],
+  "type": null,
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "I get this a lot in development and can usually pretty quickly figure out what is wrong with my json payload. However, I'd love a way to see what exactly the validation error is when I get this error. Is there a way I can log what the specific schema validation error is on the server side?",
+  "closed_by": {
+    "login": "nickgieschen",
+    "id": 1622224,
+    "node_id": "MDQ6VXNlcjE2MjIyMjQ=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/1622224?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/nickgieschen",
+    "html_url": "https://github.com/nickgieschen",
+    "followers_url": "https://api.github.com/users/nickgieschen/followers",
+    "following_url": "https://api.github.com/users/nickgieschen/following{/other_user}",
+    "gists_url": "https://api.github.com/users/nickgieschen/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/nickgieschen/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/nickgieschen/subscriptions",
+    "organizations_url": "https://api.github.com/users/nickgieschen/orgs",
+    "repos_url": "https://api.github.com/users/nickgieschen/repos",
+    "events_url": "https://api.github.com/users/nickgieschen/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/nickgieschen/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "reactions": {
+    "url": "https://api.github.com/repos/fastapi/fastapi/issues/3361/reactions",
+    "total_count": 14,
+    "+1": 14,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/fastapi/fastapi/issues/3361/timeline",
+  "performed_via_github_app": null,
+  "state_reason": "completed",
+  "pinned_comment": null
+}

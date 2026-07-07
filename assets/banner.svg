@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="Anvil - grounded support agents, measured end to end">
+  <defs>
+    <radialGradient id="glow-av" cx="0.22" cy="0.5" r="0.75">
+      <stop offset="0" stop-color="#e8590c" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#e8590c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="edge-av" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#e8590c"/>
+      <stop offset="1" stop-color="#e8590c" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1280" height="320" fill="#191613"/>
+  <rect width="1280" height="320" fill="url(#glow-av)"/>
+
+  <!-- faint oversized mark, right side texture -->
+  <g transform="translate(1020,40) scale(3.4)" opacity="0.05">
+    <path d="M8 18 h56 v10 h-18 c2 8 8 13 16 15 v9 h-40 v-9 c8 -2 14 -7 16 -15 h-14 c-9 0 -16 -4 -16 -10 z" fill="#e8590c"/>
+  </g>
+
+  <!-- mark -->
+  <g transform="translate(96,112)">
+    <path d="M8 18 h56 v10 h-18 c2 8 8 13 16 15 v9 h-40 v-9 c8 -2 14 -7 16 -15 h-14 c-9 0 -16 -4 -16 -10 z" fill="#e8590c"/>
+    <rect x="14" y="60" width="44" height="6" rx="2" fill="#e8590c" opacity="0.55"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="208" y="163" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="64" font-weight="700" letter-spacing="-1" fill="#f2ede7">anvil</text>
+  <text x="210" y="205" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="21" fill="#b3a89c">Grounded support agents, measured end to end.</text>
+
+  <!-- capability line -->
+  <text x="210" y="243" font-family="ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-size="14" fill="#7d7468">LangGraph · pgvector hybrid retrieval · HITL · Langfuse · eval gates in CI</text>
+
+  <rect x="96" y="272" width="420" height="2" fill="url(#edge-av)"/>
+</svg>

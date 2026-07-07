@@ -1,0 +1,99 @@
+{
+  "url": "https://api.github.com/repos/fastapi/fastapi/issues/2595",
+  "repository_url": "https://api.github.com/repos/fastapi/fastapi",
+  "labels_url": "https://api.github.com/repos/fastapi/fastapi/issues/2595/labels{/name}",
+  "comments_url": "https://api.github.com/repos/fastapi/fastapi/issues/2595/comments",
+  "events_url": "https://api.github.com/repos/fastapi/fastapi/issues/2595/events",
+  "html_url": "https://github.com/fastapi/fastapi/issues/2595",
+  "id": 777719402,
+  "node_id": "MDU6SXNzdWU3Nzc3MTk0MDI=",
+  "number": 2595,
+  "title": "`requests` not found on `from fastapi.testclient import TestClient`",
+  "user": {
+    "login": "nalepae",
+    "id": 4943830,
+    "node_id": "MDQ6VXNlcjQ5NDM4MzA=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/4943830?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/nalepae",
+    "html_url": "https://github.com/nalepae",
+    "followers_url": "https://api.github.com/users/nalepae/followers",
+    "following_url": "https://api.github.com/users/nalepae/following{/other_user}",
+    "gists_url": "https://api.github.com/users/nalepae/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/nalepae/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/nalepae/subscriptions",
+    "organizations_url": "https://api.github.com/users/nalepae/orgs",
+    "repos_url": "https://api.github.com/users/nalepae/repos",
+    "events_url": "https://api.github.com/users/nalepae/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/nalepae/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+    {
+      "id": 1154536363,
+      "node_id": "MDU6TGFiZWwxMTU0NTM2MzYz",
+      "url": "https://api.github.com/repos/fastapi/fastapi/labels/question",
+      "name": "question",
+      "color": "d876e3",
+      "default": true,
+      "description": "Question or problem"
+    },
+    {
+      "id": 5194404667,
+      "node_id": "LA_kwDOCZduT88AAAABNZxTOw",
+      "url": "https://api.github.com/repos/fastapi/fastapi/labels/question-migrate",
+      "name": "question-migrate",
+      "color": "ededed",
+      "default": false,
+      "description": null
+    }
+  ],
+  "state": "closed",
+  "locked": true,
+  "assignees": [
+
+  ],
+  "milestone": null,
+  "comments": 7,
+  "created_at": "2021-01-03T21:25:33Z",
+  "updated_at": "2023-02-28T17:15:46Z",
+  "closed_at": "2023-02-28T17:15:46Z",
+  "assignee": null,
+  "author_association": "NONE",
+  "issue_field_values": [
+
+  ],
+  "type": null,
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "### First check\r\n\r\n* [X] I added a very descriptive title to this issue.\r\n* [X] I used the GitHub search to find a similar issue and didn't find it.\r\n* [X] I searched the FastAPI documentation, with the integrated search.\r\n* [X] I already searched in Google \"How to X in FastAPI\" and didn't find any information.\r\n* [X] I already read and followed all the tutorial in the docs and didn't find an answer.\r\n* [X] I already checked if it is not related to FastAPI but to [Pydantic](https://github.com/samuelcolvin/pydantic).\r\n* [X] I already checked if it is not related to FastAPI but to [Swagger UI](https://github.com/swagger-api/swagger-ui).\r\n* [X] I already checked if it is not related to FastAPI but to [ReDoc](https://github.com/Redocly/redoc).\r\n* [X] After submitting this, I commit to one of:\r\n    * Read open issues with questions until I find 2 issues where I can help someone and add a comment to help there.\r\n    * I already hit the \"watch\" button in this repository to receive notifications and I commit to help at least 2 people that ask questions in the future.\r\n    * Implement a Pull Request for a confirmed bug.\r\n\r\n### How to reproduce the issue\r\n\r\n1. Create a new bare python environment (virtual or not)\r\n2. Install `fastapi`: `$ pip install fastapi`\r\n3. Do the following import:\r\n```python\r\nfrom fastapi.testclient import TestClient\r\n```\r\n\r\n### Observed\r\nThe following stack trace:\r\n```python\r\n---------------------------------------------------------------------------\r\nModuleNotFoundError                       Traceback (most recent call last)\r\n<ipython-input-1-37f52789b9f0> in <module>\r\n----> 1 from fastapi.testclient import TestClient\r\n\r\n~/.pyenv/versions/3.8.6/envs/test/lib/python3.8/site-packages/fastapi/testclient.py in <module>\r\n----> 1 from starlette.testclient import TestClient as TestClient  # noqa\r\n\r\n~/.pyenv/versions/3.8.6/envs/test/lib/python3.8/site-packages/starlette/testclient.py in <module>\r\n     10 from urllib.parse import unquote, urljoin, urlsplit\r\n     11 \r\n---> 12 import requests\r\n     13 \r\n     14 from starlette.types import Message, Receive, Scope, Send\r\n\r\nModuleNotFoundError: No module named 'requests'\r\n```\r\n\r\n### Expected\r\nNo error\r\n\r\n### Workaround\r\n`$ pip install requests`\r\n\r\n### Environment\r\n* **OS:** Ubuntu 20.04\r\n* **Python:** 3.8.6 (on virtualenv)\r\n*  **FastAPI:** 0.63.0",
+  "closed_by": null,
+  "reactions": {
+    "url": "https://api.github.com/repos/fastapi/fastapi/issues/2595/reactions",
+    "total_count": 26,
+    "+1": 26,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/fastapi/fastapi/issues/2595/timeline",
+  "performed_via_github_app": null,
+  "state_reason": "completed",
+  "pinned_comment": null
+}
