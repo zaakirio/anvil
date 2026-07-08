@@ -128,6 +128,10 @@ To refresh the corpus from upstream: `uv run python scripts/fetch_corpus.py` (fe
 With `ANTHROPIC_API_KEY` set: `uv run anvil ask "How do I enable CORS?"`, `uv run anvil chat`, `uv run anvil eval agent`, `uv run anvil report`.
 The exact with-keys sequence, including expected spend, is in RUN_WITH_KEYS.md.
 
+Generation is provider-agnostic: it resolves through LangChain's `init_chat_model`, so the model config is a provider-qualified `provider:model` string and the default stays Anthropic/Claude (`anthropic:claude-sonnet-5`) to keep keyless demos and CI deterministic.
+Switch providers by setting `ANVIL_ANSWER_MODEL` (and `ANVIL_CHEAP_MODEL` / `ANVIL_JUDGE_MODEL`) and the matching key, e.g. `ANVIL_ANSWER_MODEL=openai:gpt-5.4` with `OPENAI_API_KEY`, or `google_genai:gemini-2.5-pro` with `GOOGLE_API_KEY` after `uv sync --extra google`.
+Embeddings are OpenAI-or-local: `text-embedding-3-small` when `OPENAI_API_KEY` is set, otherwise a local CPU fallback (`all-MiniLM-L6-v2`) that CI uses.
+
 ## Honest limitations
 
 The headline retrieval numbers are from the fallback embedder on a 1,199-chunk corpus; they establish the harness and the CI gate, not a claim about tuned production retrieval, and there is obvious headroom (a stronger embedder, query rewriting, chunk-size tuning) that the gate exists to measure.
@@ -139,6 +143,18 @@ The refusal threshold does not cleanly split answerable from unanswerable on rea
 The Langfuse stack boots from this compose file and reports healthy (verified against v3.206.0), but actual traces require keys plus a real agent run, so walk that leg after key setup.
 `draft_issue_comment` records and resolves drafts but never posts to GitHub; wiring the authenticated post-after-approval call is deliberately out of scope.
 Golden labels are one person's judgment of relevance; the per-query output in `eval_results/` exists so any label can be audited against its source URL.
+
+## flux control plane (optional)
+
+anvil exposes an optional A2A surface for the [flux](../flux) fleet control plane, behind the `a2a` extra and a separate entrypoint, so the CLI, MCP server, and the 41-test suite are untouched.
+
+```bash
+uv sync --extra a2a
+FLUX_OTLP_ENDPOINT=http://127.0.0.1:3100/v1/traces ANVIL_A2A_EMBEDDER=fallback uv run --extra a2a anvil-a2a
+```
+
+It serves a real A2A Agent Card at `/.well-known/agent-card.json` describing the `answer_grounded_question` skill, and a task endpoint at `/a2a/tasks` that honors an incoming W3C `traceparent` so its retrieve/rerank/answer spans join the caller's distributed trace.
+With `FLUX_OTLP_ENDPOINT` unset there is no tracer and nothing to install; this is purely additive.
 
 ## Attribution
 

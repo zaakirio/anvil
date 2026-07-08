@@ -1,12 +1,11 @@
 import json
-import os
 import sys
 import uuid
 from pathlib import Path
 
 import click
 
-from anvil import config
+from anvil import config, providers
 
 
 @click.group()
@@ -14,9 +13,16 @@ def cli():
     """Anvil: a support agent over real product docs, with evals as the centerpiece."""
 
 
-def _require_anthropic_key() -> None:
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise click.ClickException("ANTHROPIC_API_KEY is required for this command")
+def _require_model_keys(*specs: str) -> None:
+    """Ensure each generation model's provider API key is set, naming the env var if not."""
+    missing: list[str] = []
+    for spec in specs:
+        if not providers.provider_key_is_set(spec):
+            provider, _ = providers.parse_model_spec(spec)
+            missing.append(providers.key_env_var(provider) or f"{provider.upper()}_API_KEY")
+    if missing:
+        names = ", ".join(dict.fromkeys(missing))
+        raise click.ClickException(f"{names} is required for this command")
 
 
 @cli.command()
@@ -74,7 +80,7 @@ def _print_final(result) -> None:
 @click.option("--thread", default=None, help="Conversation thread id (persists across calls).")
 def ask(question: str, thread: str | None):
     """One-shot question or action through the full agent graph."""
-    _require_anthropic_key()
+    _require_model_keys(config.ANSWER_MODEL, config.CHEAP_MODEL)
     from langchain_core.messages import HumanMessage
 
     from anvil.agent.graph import build_graph, default_checkpointer
@@ -91,7 +97,7 @@ def ask(question: str, thread: str | None):
 @cli.command()
 def chat():
     """Interactive multi-turn chat with the agent (HITL approvals inline)."""
-    _require_anthropic_key()
+    _require_model_keys(config.ANSWER_MODEL, config.CHEAP_MODEL)
     from langchain_core.messages import HumanMessage
 
     from anvil.agent.graph import build_graph, default_checkpointer
@@ -137,8 +143,8 @@ def eval_retrieval(embedder_kind: str, no_rerank: bool):
 @eval_group.command(name="agent")
 @click.option("--skip-judge", is_flag=True, help="Deterministic checks only (no judge calls).")
 def eval_agent(skip_judge: bool):
-    """End-to-end agent eval over golden conversations. Requires ANTHROPIC_API_KEY."""
-    _require_anthropic_key()
+    """End-to-end agent eval over golden conversations. Requires the model provider keys."""
+    _require_model_keys(config.ANSWER_MODEL, config.CHEAP_MODEL, config.JUDGE_MODEL)
     from anvil.evals.agent import run_agent_eval
 
     result = run_agent_eval(skip_judge=skip_judge)

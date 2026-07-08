@@ -15,6 +15,23 @@ def test_unknown_model_raises():
         costs.cost_usd("gpt-nonexistent", 100, 100)
 
 
+def test_provider_qualified_and_longest_prefix_pricing():
+    # Leading "provider:" prefix is stripped before matching.
+    assert costs.cost_usd("anthropic:claude-sonnet-5", 1_000_000, 0) == 3.00
+    assert costs.cost_usd("openai:gpt-5.4", 0, 1_000_000) == 15.00
+    # Longest matching key wins: gpt-5.4-mini must not match the gpt-5.4 entry.
+    assert costs.cost_usd("openai:gpt-5.4-mini", 1_000_000, 0) == 0.75
+    assert costs.cost_usd("google_genai:gemini-2.5-flash-lite", 0, 1_000_000) == 0.40
+
+
+def test_record_degrades_gracefully_for_unpriced_model():
+    usd = costs.record("t-x", "answer", "openai:gpt-nonexistent", 1000, 200)
+    assert usd == 0.0
+    entry = costs.load_ledger()[-1]
+    assert entry["cost_usd"] == 0.0
+    assert "note" in entry
+
+
 def test_ledger_report_aggregates_per_conversation():
     costs.record("t1", "router", "claude-haiku-4-5", 500, 10)
     costs.record("t1", "answer", "claude-sonnet-5", 2000, 400)

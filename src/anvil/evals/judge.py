@@ -28,9 +28,9 @@ JUDGE_SYSTEM = (
 
 
 def _default_judge():
-    from langchain_anthropic import ChatAnthropic
+    from anvil.providers import build_chat_model
 
-    return ChatAnthropic(model=config.JUDGE_MODEL, max_tokens=512)
+    return build_chat_model(config.JUDGE_MODEL, max_tokens=512)
 
 
 def judge_answer(question: str, answer: str, contexts: list[str], judge_model=None) -> dict:

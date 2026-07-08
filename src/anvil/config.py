@@ -27,9 +27,13 @@ DEFAULT_TOP_K = int(os.environ.get("ANVIL_TOP_K", "8"))
 # retrieve plausible-looking chunks are handled by the prompt-layer refusal.
 REFUSAL_SCORE_THRESHOLD = float(os.environ.get("ANVIL_REFUSAL_THRESHOLD", "0.0"))
 
-ANSWER_MODEL = os.environ.get("ANVIL_ANSWER_MODEL", "claude-sonnet-5")
-CHEAP_MODEL = os.environ.get("ANVIL_CHEAP_MODEL", "claude-haiku-4-5")
-JUDGE_MODEL = os.environ.get("ANVIL_JUDGE_MODEL", "claude-sonnet-5")
+# Generation models are provider-qualified ("provider:model"); see anvil.providers.
+# Default to Anthropic/Claude so keyless demos and CI stay deterministic. Switch
+# providers by setting these env vars, e.g. ANVIL_ANSWER_MODEL=openai:gpt-5.4, and
+# supplying the matching provider key.
+ANSWER_MODEL = os.environ.get("ANVIL_ANSWER_MODEL", "anthropic:claude-sonnet-5")
+CHEAP_MODEL = os.environ.get("ANVIL_CHEAP_MODEL", "anthropic:claude-haiku-4-5")
+JUDGE_MODEL = os.environ.get("ANVIL_JUDGE_MODEL", "anthropic:claude-sonnet-5")
 
 OPENAI_EMBEDDING_MODEL = "text-embedding-3-small"
 FALLBACK_EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"

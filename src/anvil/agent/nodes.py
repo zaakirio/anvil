@@ -72,11 +72,11 @@ class ModelBundle:
 
     @classmethod
     def default(cls) -> "ModelBundle":
-        from langchain_anthropic import ChatAnthropic
+        from anvil.providers import build_chat_model
 
         return cls(
-            answer_model=ChatAnthropic(model=settings.ANSWER_MODEL, max_tokens=2048),
-            cheap_model=ChatAnthropic(model=settings.CHEAP_MODEL, max_tokens=512),
+            answer_model=build_chat_model(settings.ANSWER_MODEL, max_tokens=2048),
+            cheap_model=build_chat_model(settings.CHEAP_MODEL, max_tokens=512),
         )
 
 
