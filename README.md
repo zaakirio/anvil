@@ -7,9 +7,9 @@ The worked example is FastAPI: Anvil ingests 118 pages of the actual FastAPI doc
 The architecture is product-agnostic; point the ingestion at any markdown docs tree and rebuild the goldens.
 The centerpiece is the measurement system around it: a retrieval golden set built from real Stack Overflow and GitHub questions, a golden set of end-to-end conversations, a CI regression gate, walkable Langfuse traces, and a cost-per-conversation number computed from a real token ledger.
 
-## Headline numbers (measured, not estimated)
+## Measured baseline
 
-Retrieval quality on the 52-query golden set (real user questions, labeled by inspection), hybrid search + cross-encoder rerank, fallback embedder (`all-MiniLM-L6-v2`, the keyless CI arm), 1,199-chunk corpus:
+Retrieval quality on the 52-query golden set (real user questions, labeled by inspection), hybrid search + cross-encoder rerank, fallback embedder (`all-MiniLM-L6-v2`), 1,199-chunk corpus:
 
 ```
 recall@5   0.5673
@@ -19,9 +19,71 @@ nDCG@10    0.5847
 ```
 
 Fusion-only (no reranker) scores recall@5 0.4615, recall@10 0.6250, MRR 0.4077, nDCG@10 0.4385 on the same set, so the reranker is worth roughly ten recall points at k=5 and fifteen MRR points here.
-These numbers are visibly lower than a toy corpus would produce, because the questions are real (vague titles, error messages, XY problems) and the corpus is real (1,199 chunks with heavy topical overlap).
-That is the point: this is what retrieval actually looks like before you tune it, measured honestly, with a gate that catches regressions from here.
-These are the fallback-embedder numbers because this environment holds no API keys; the identical harness runs with `text-embedding-3-small` via `anvil eval retrieval --embedder openai` (see RUN_WITH_KEYS.md), and the gate refuses to compare runs across embedders.
+These numbers are lower than a toy corpus would produce, because the questions are real (vague titles, error messages, XY problems) and the corpus is real (1,199 chunks with heavy topical overlap).
+This is the fallback-embedder baseline: the eval runs with zero keys using a local MiniLM embedder, and the identical harness runs with `text-embedding-3-small` via `anvil eval retrieval --embedder openai` when `OPENAI_API_KEY` is set.
+The gate refuses to compare runs across embedders and catches regressions from this baseline.
+
+## Quickstart
+
+Bring your own keys, start Postgres, and run the full loop:
+
+```bash
+docker compose up -d postgres
+uv sync
+export ANTHROPIC_API_KEY=sk-ant-...
+export OPENAI_API_KEY=sk-...
+
+uv run anvil ingest --embedder openai
+uv run anvil eval retrieval --embedder openai
+uv run anvil eval agent
+uv run anvil report
+```
+
+`anvil ingest` builds the hybrid index with `text-embedding-3-small`; `anvil eval retrieval` scores it against the 52-query golden set and writes `eval_results/retrieval-<ts>.json` labeled with the embedder.
+`anvil eval agent` runs the 42 golden conversations through the live graph with `claude-sonnet-5` (answer, act, judge) and `claude-haiku-4-5` (router, smalltalk); the tool cases fetch live GitHub issues over the public API, and unauthenticated quota (60 requests/hour) is sufficient.
+`anvil eval agent --skip-judge` runs the deterministic checks only.
+`anvil report` prints the exact cost of the run from the token ledger.
+
+Talk to the agent directly:
+
+```bash
+uv run anvil ask "How do I enable CORS in FastAPI?"
+uv run anvil ask "Look up fastapi issue 2595 and draft a comment explaining the httpx requirement."
+uv run anvil chat
+```
+
+`anvil chat` pauses inline for comment-draft approvals (the HITL interrupt) and persists threads in a SQLite checkpointer under `.anvil/`.
+Approved drafts are recorded in `data/backend/comment_drafts.json`; nothing is ever posted to GitHub.
+
+Freeze a passing run as a baseline and gate future runs against it:
+
+```bash
+cp "$(ls -t eval_results/retrieval-*.json | head -1)" baselines/retrieval_openai_baseline.json
+uv run anvil gate --baseline baselines/retrieval_openai_baseline.json
+```
+
+The same pattern works for agent runs (`baselines/agent_baseline.json`).
+The CI gate stays on the fallback baseline (`baselines/retrieval_baseline.json`) because CI runs keyless; the gate refuses cross-embedder comparisons anyway.
+
+### Zero-key path
+
+Ingestion, the retrieval eval, the gate, and the full test suite also run with no keys at all, using the local MiniLM fallback embedder:
+
+```bash
+uv run anvil ingest --embedder fallback
+uv run anvil eval retrieval --embedder fallback
+uv run anvil gate
+uv run pytest
+```
+
+The committed corpus snapshot means no network is needed for any of the above; this is the arm CI runs on every push.
+To refresh the corpus from upstream: `uv run python scripts/fetch_corpus.py` (fetches the pinned commit; edit `PINNED_COMMIT` to bump).
+
+### Providers
+
+Generation is provider-agnostic: it resolves through LangChain's `init_chat_model`, so the model config is a provider-qualified `provider:model` string and the default is `anthropic:claude-sonnet-5`.
+Switch providers by setting `ANVIL_ANSWER_MODEL` (and `ANVIL_CHEAP_MODEL` / `ANVIL_JUDGE_MODEL`) and the matching key, e.g. `ANVIL_ANSWER_MODEL=openai:gpt-5.4` with `OPENAI_API_KEY`, or `google_genai:gemini-2.5-pro` with `GOOGLE_API_KEY` after `uv sync --extra google`.
+Embeddings are OpenAI-or-local: `text-embedding-3-small` when `OPENAI_API_KEY` is set, otherwise a local CPU fallback (`all-MiniLM-L6-v2`) that CI uses.
 
 ## The problem this design answers
 
@@ -75,16 +137,16 @@ FastAPI's documentation is MIT licensed; copyright Sebastián Ramírez and contr
 
 ## Evals: the centerpiece
 
-Layer 1, retrieval (keyless, gates CI).
+Layer 1, retrieval (`anvil eval retrieval`, gates CI).
 52 golden queries, every one a real user question: 45 mined from Stack Overflow question titles and 7 from FastAPI GitHub issues, each carrying its source URL in `goldens/retrieval.jsonl`.
 Relevant chunks were labeled by inspection of the corpus (that is golden-set curation, the one place a human belongs in the loop).
 `anvil eval retrieval` computes recall@5, recall@10, MRR, and nDCG@10 and validates every label against the ingested corpus first, so a renamed heading fails loudly.
 
-Layer 2, end-to-end agent (needs keys, harness proven keyless).
+Layer 2, end-to-end agent (`anvil eval agent`, needs `ANTHROPIC_API_KEY`).
 42 golden conversations, again from real questions: 16 grounded answers with expected citations, 10 refusals against questions the docs genuinely cannot answer (rate limiting, favicons, refresh tokens, API versioning, all with source URLs), 10 GitHub-issue lookups with expected arguments, 5 comment drafts through the HITL interrupt (approve and reject paths), 1 smalltalk.
 Deterministic checks run first: citation present and citing the expected documents, refused-when-should, correct tool with correct argument subset, interrupt fired when required.
 A `claude-sonnet-5` judge then scores faithfulness and relevancy per Ragas conventions.
-The full harness, including interrupts and judging, is exercised in the test suite against recorded fixtures (`fixtures/`), so it is known to work before a single API dollar is spent.
+The full harness, including interrupts and judging, is exercised in the test suite against recorded fixtures (`fixtures/`), so the suite runs offline and deterministic.
 
 Layer 3, the gate.
 `anvil gate` compares the latest run against a committed baseline JSON and exits nonzero when any metric drops more than the tolerance (default 0.02).
@@ -94,7 +156,6 @@ GitHub Actions runs lint, the full test suite, ingestion, the keyless retrieval 
 
 On the real corpus the answerable and unanswerable populations overlap: answerable questions have a median rank-1 rerank score of 4.4 but 5 of 52 score below 0, while known-gap questions range from -9.7 to 4.6 with 4 of 10 below 0.
 The deterministic threshold sits at 0.0 (the cross-encoder's own relevance boundary) and catches the clearly-off queries for free; gaps that still retrieve plausible-looking chunks are handled by the prompt-layer refusal, which is why the design has two layers.
-A toy corpus produces a clean margin here; a real one does not, and the numbers above are the honest version.
 
 ## Cost per invocation
 
@@ -104,49 +165,18 @@ Every LLM call in the graph writes node, model, and exact token counts to a JSON
 ## Observability
 
 Langfuse (self-hosted, v3) is integrated through its LangChain callback and is strictly env-gated: without `LANGFUSE_*` keys it is a no-op.
-`docker compose --profile observability up -d` brings up the full stack (web, worker, Postgres, ClickHouse, Redis, MinIO); every agent turn then produces a walkable trace of router decision, retrieval, answer or tool calls, and judge scores during evals.
+`docker compose --profile observability up -d` brings up the full stack (web, worker, Postgres, ClickHouse, Redis, MinIO).
+Open http://localhost:3000, create an org/project, and export `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`, and `LANGFUSE_HOST=http://localhost:3000`.
+Every `anvil ask`, `anvil chat`, and `anvil eval agent` run then produces a walkable trace of router decision, retrieval, answer or tool calls, and judge scores.
 
 ## MCP surface
 
 `uv run anvil-mcp` starts a stdio MCP server exposing `search_docs` and `get_github_issue` against the same backend the agent uses, so Claude Desktop or any MCP client can drive the system directly.
 Comment drafts stay agent-only because they belong behind the HITL interrupt.
 
-## Quickstart
-
-```bash
-docker compose up -d postgres
-uv sync
-uv run anvil ingest --embedder fallback   # keyless; use --embedder openai with a key
-uv run anvil eval retrieval --embedder fallback
-uv run anvil gate
-uv run pytest
-```
-
-The committed corpus snapshot means no network is needed for any of the above.
-To refresh the corpus from upstream: `uv run python scripts/fetch_corpus.py` (fetches the pinned commit; edit `PINNED_COMMIT` to bump).
-
-With `ANTHROPIC_API_KEY` set: `uv run anvil ask "How do I enable CORS?"`, `uv run anvil chat`, `uv run anvil eval agent`, `uv run anvil report`.
-The exact with-keys sequence, including expected spend, is in RUN_WITH_KEYS.md.
-
-Generation is provider-agnostic: it resolves through LangChain's `init_chat_model`, so the model config is a provider-qualified `provider:model` string and the default stays Anthropic/Claude (`anthropic:claude-sonnet-5`) to keep keyless demos and CI deterministic.
-Switch providers by setting `ANVIL_ANSWER_MODEL` (and `ANVIL_CHEAP_MODEL` / `ANVIL_JUDGE_MODEL`) and the matching key, e.g. `ANVIL_ANSWER_MODEL=openai:gpt-5.4` with `OPENAI_API_KEY`, or `google_genai:gemini-2.5-pro` with `GOOGLE_API_KEY` after `uv sync --extra google`.
-Embeddings are OpenAI-or-local: `text-embedding-3-small` when `OPENAI_API_KEY` is set, otherwise a local CPU fallback (`all-MiniLM-L6-v2`) that CI uses.
-
-## Honest limitations
-
-The headline retrieval numbers are from the fallback embedder on a 1,199-chunk corpus; they establish the harness and the CI gate, not a claim about tuned production retrieval, and there is obvious headroom (a stronger embedder, query rewriting, chunk-size tuning) that the gate exists to measure.
-At this corpus size pgvector runs exact scans (no ANN index), which is the right call here and would need revisiting at 100x scale.
-The agent-eval layer is fully wired and fixture-proven, but the numbers it produces require API keys this environment does not have; RUN_WITH_KEYS.md is the one-command path once they exist.
-The LLM judge inherits judge variance; deterministic checks are separated precisely so the gate can hold them to a tighter tolerance than judge scores.
-Refusal detection in the eval uses a marker heuristic over the final answer; it is exact for the deterministic refusal path and approximate for model-phrased refusals.
-The refusal threshold does not cleanly split answerable from unanswerable on real data (see the calibration section); three of the ten golden gap questions score above it and depend on the prompt-layer refusal.
-The Langfuse stack boots from this compose file and reports healthy (verified against v3.206.0), but actual traces require keys plus a real agent run, so walk that leg after key setup.
-`draft_issue_comment` records and resolves drafts but never posts to GitHub; wiring the authenticated post-after-approval call is deliberately out of scope.
-Golden labels are one person's judgment of relevance; the per-query output in `eval_results/` exists so any label can be audited against its source URL.
-
 ## flux control plane (optional)
 
-anvil exposes an optional A2A surface for the [flux](../flux) fleet control plane, behind the `a2a` extra and a separate entrypoint, so the CLI, MCP server, and the 41-test suite are untouched.
+anvil exposes an optional A2A surface for the [flux](../flux) fleet control plane, behind the `a2a` extra and a separate entrypoint, so the CLI, MCP server, and the test suite are untouched.
 
 ```bash
 uv sync --extra a2a

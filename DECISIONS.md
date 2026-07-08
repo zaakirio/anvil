@@ -2,7 +2,7 @@
 
 ## Corpus: real documentation at a pinned commit, snapshot committed
 
-The corpus is the actual FastAPI documentation (MIT licensed), not synthetic pages, because a portfolio eval only means something if the retrieval difficulty is real.
+The corpus is the actual FastAPI documentation (MIT licensed), not synthetic pages, because an eval only means something if the retrieval difficulty is real.
 `scripts/fetch_corpus.py` pins commit `7cb06f360dd44efac059848df1a9beee7643b018` of `fastapi/fastapi`, selects 118 pages (tutorial, advanced, deployment, how-to, reference, core top-level), inlines the `{* docs_src/... *}` code includes so chunks contain the code users ask about, and flattens MkDocs-Material markup (admonitions, tabs, heading anchors) to plain markdown.
 The processed snapshot (~0.9 MB) is committed so `anvil ingest` and the evals are reproducible offline; the script exists to bump the pin, not as a runtime dependency.
 Provenance (source, commit, page list, license) is recorded in `corpus/PROVENANCE.json`.
@@ -12,7 +12,7 @@ Provenance (source, commit, page list, license) is recorded in `corpus/PROVENANC
 Every retrieval golden is a real question: 45 Stack Overflow titles and 7 FastAPI GitHub issues, chosen for being answerable from the ingested pages, each with its source URL recorded in the golden file.
 Relevant chunks were labeled by reading the corpus and deciding which sections actually answer the question; that human judgment is the legitimate manual step in golden-set curation, and the per-query eval output exists so any label can be audited.
 Refusal goldens are real questions the docs genuinely do not answer (rate limiting, favicons, refresh tokens, API versioning, MongoDB), verified by grepping the corpus before inclusion.
-Real questions are messier than synthetic ones (vague titles, error dumps, XY problems), which drops the headline metrics relative to a toy corpus and is exactly the honesty this project is for.
+Real questions are messier than synthetic ones (vague titles, error dumps, XY problems), which drops the headline metrics relative to a toy corpus and keeps the eval representative of real support traffic.
 
 ## Chunking: heading-aware markdown, not fixed windows
 
@@ -44,7 +44,7 @@ The answer node refuses without calling the model when the best rerank score is 
 Measured on the real golden set, the populations overlap: answerable questions have median rank-1 score 4.4 with 5/52 below 0, and known-gap questions range -9.7 to 4.6 with 4/10 below 0.
 The threshold sits at 0.0, the cross-encoder's own relevance boundary: it catches clearly-off queries for free and false-refuses roughly one answerable question in ten at the tail.
 Gap questions that still retrieve plausible chunks (a middleware question when middleware pages exist but do not answer it) pass the threshold and rely on the prompt-layer instruction to refuse when the excerpts do not contain the answer.
-A clean threshold split was a property of the earlier synthetic corpus, not of real data; the two-layer design is the honest response to that.
+A clean threshold split was a property of the earlier synthetic corpus, not of real data; the two-layer design is the response to that.
 
 ## Tools: real APIs, and a write boundary that never writes upstream
 
