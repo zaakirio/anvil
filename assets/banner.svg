@@ -1,35 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="Anvil - grounded support agents, measured end to end">
-  <defs>
-    <radialGradient id="glow-av" cx="0.22" cy="0.5" r="0.75">
-      <stop offset="0" stop-color="#e8590c" stop-opacity="0.16"/>
-      <stop offset="1" stop-color="#e8590c" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="edge-av" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#e8590c"/>
-      <stop offset="1" stop-color="#e8590c" stop-opacity="0"/>
-    </linearGradient>
-  </defs>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-label="anvil - grounded answers forged from cited sources">
+  <rect width="1280" height="320" fill="#181613"/>
 
-  <rect width="1280" height="320" fill="#191613"/>
-  <rect width="1280" height="320" fill="url(#glow-av)"/>
-
-  <!-- faint oversized mark, right side texture -->
-  <g transform="translate(1020,40) scale(3.4)" opacity="0.05">
-    <path d="M8 18 h56 v10 h-18 c2 8 8 13 16 15 v9 h-40 v-9 c8 -2 14 -7 16 -15 h-14 c-9 0 -16 -4 -16 -10 z" fill="#e8590c"/>
+  <!-- CITATION CONSTELLATION forged onto an anvil: retrieved source nodes (top) link
+       down to a single grounded answer struck on the anvil. Graph, not an icon-in-slot. -->
+  <!-- source nodes + links converging to the strike point -->
+  <g stroke="#e8792c" stroke-width="1.5" opacity="0.5">
+    <line x1="150" y1="70" x2="235" y2="150"/>
+    <line x1="255" y1="52" x2="235" y2="150"/>
+    <line x1="360" y1="66" x2="235" y2="150"/>
+    <line x1="430" y1="96" x2="235" y2="150"/>
+  </g>
+  <g fill="#241d16" stroke="#e8792c" stroke-width="2">
+    <circle cx="150" cy="70" r="10"/><circle cx="255" cy="52" r="10"/>
+    <circle cx="360" cy="66" r="10"/><circle cx="430" cy="96" r="10"/>
+  </g>
+  <g font-family="ui-monospace,Menlo,monospace" font-size="10" fill="#8a7355" text-anchor="middle">
+    <text x="150" y="45">[1]</text><text x="255" y="27">[2]</text><text x="360" y="41">[3]</text><text x="452" y="92">[4]</text>
   </g>
 
-  <!-- mark -->
-  <g transform="translate(96,112)">
-    <path d="M8 18 h56 v10 h-18 c2 8 8 13 16 15 v9 h-40 v-9 c8 -2 14 -7 16 -15 h-14 c-9 0 -16 -4 -16 -10 z" fill="#e8590c"/>
-    <rect x="14" y="60" width="44" height="6" rx="2" fill="#e8590c" opacity="0.55"/>
+  <!-- the grounded answer: bright strike point on the anvil face -->
+  <circle cx="235" cy="150" r="7" fill="#ffb066"/>
+  <circle cx="235" cy="150" r="14" fill="none" stroke="#e8792c" stroke-width="2" opacity="0.5"/>
+
+  <!-- anvil silhouette as the baseline platform -->
+  <g transform="translate(150,168)">
+    <path d="M0 12 h170 v14 h-44 c4 16 18 26 36 30 v10 h-96 v-10 c18 -4 32 -14 36 -30 h-30 c-20 0 -38 -8 -38 -22 z" fill="#e8792c"/>
+    <rect x="44" y="66" width="82" height="10" rx="2" fill="#e8792c" opacity="0.5"/>
   </g>
 
-  <!-- wordmark -->
-  <text x="208" y="163" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="64" font-weight="700" letter-spacing="-1" fill="#f2ede7">anvil</text>
-  <text x="210" y="205" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="21" fill="#b3a89c">Grounded support agents, measured end to end.</text>
-
-  <!-- capability line -->
-  <text x="210" y="243" font-family="ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-size="14" fill="#7d7468">LangGraph · pgvector hybrid retrieval · HITL · Langfuse · eval gates in CI</text>
-
-  <rect x="96" y="272" width="420" height="2" fill="url(#edge-av)"/>
+  <!-- wordmark right -->
+  <g transform="translate(540,0)">
+    <text x="0" y="140" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="80" font-weight="800" letter-spacing="-2" fill="#f4ede4">anvil</text>
+    <text x="4" y="182" font-family="-apple-system,'Segoe UI',Helvetica,Arial,sans-serif" font-size="22" fill="#bda88f">Grounded answers, forged from cited sources.</text>
+    <text x="4" y="220" font-family="ui-monospace,'SF Mono',Menlo,Consolas,monospace" font-size="14" fill="#877655" letter-spacing="0.5">LangGraph · pgvector hybrid retrieval · HITL · Langfuse · eval gates in CI</text>
+  </g>
 </svg>
